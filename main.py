@@ -1,15 +1,25 @@
 from typing import Union
 
 from fastapi import FastAPI
+from redis_om import get_redis_connection, HashModel
 
 app = FastAPI()
 
+redis = get_redis_connection(
+    host = "redis-15998.c264.ap-south-1-1.ec2.redns.redis-cloud.com",
+    port = 15998,
+    password = "yeRdB7kBYnP6eeG45OksdfLh9iJLlDhL",
+    decode_responses = True
+)
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+class Product:
+    name: str
+    price: float
+    quantity: int
 
+    class Meta:
+        database = redis
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.get('/products')
+def allProducts():
+    return []
